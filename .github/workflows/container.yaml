@@ -2,6 +2,23 @@ name: Container
 on: push
 
 jobs:
+  docker-steps:
+    runs-on: ubuntu-latest
+    container:
+      image: node:10.18.0-jessie
+    steps:
+      - name: log node
+        run: node -v
+      - name: step with docker
+        uses: docker://node:12.14.1-alpine3.10
+        with:
+          entrypoint: '/bin/echo'
+          arg: "Hello world"
+      - name: log node exe
+        uses: docker://node:12.14.1-alpine3.10
+        with:
+          entrypoint: usr/local/bin/node
+          arg: -v
   node-docker:
     runs-on: ubuntu-latest
     container:
@@ -11,19 +28,19 @@ jobs:
         run: |
           node -v
           cat /etc/os-release
-  node-docker-services:
-    runs-on: ubuntu-latest
-    services:
-      app:
-        image: alialaa17/node-api # docker image
-        ports:
-          - 3001:3000
-      mongo:
-        image: mongo
-        ports:
-          - "27017:27017"
-    steps:
-      - name: post a user
-        run: "curl -X POST https://localhost:3001/api/users -H 'Content-Type: application/json' -d '{\"username\": \"hello\", \"address\": \"dwded\"}'"
-      - name: get users
-        run: curl https://localhost:3001/api/users
+  # node-docker-services:
+  #   runs-on: ubuntu-latest
+  #   services:
+  #     app:
+  #       image: alialaa17/node-api # docker image
+  #       ports:
+  #         - 3001:3000
+  #     mongo:
+  #       image: mongo
+  #       ports:
+  #         - "27017:27017"
+  #   steps:
+  #     - name: post a user
+  #       run: "curl -X POST https://localhost:3001/api/users -H 'Content-Type: application/json' -d '{\"username\": \"hello\", \"address\": \"dwded\"}'"
+  #     - name: get users
+  #       run: curl https://localhost:3001/api/users
